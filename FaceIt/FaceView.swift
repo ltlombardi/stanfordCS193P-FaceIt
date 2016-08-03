@@ -28,6 +28,17 @@ class FaceView: UIView {
      //var skullCenter = convertPoint(center, toView: superview) // Could do this, but the other is simpler
      let skullCenter = CGPoint(x: bounds.midX, y: bounds.midY)
      */
+    
+    func changeScale(recognizer: UIPinchGestureRecognizer){
+        switch recognizer.state {
+        case .Changed, .Ended:
+            scale *= recognizer.scale
+            recognizer.scale = 1
+        default:
+            break
+        }
+    }
+    
     private var skullRadius: CGFloat {
         return min(bounds.size.width, bounds.size.height) / 2 * scale
     }

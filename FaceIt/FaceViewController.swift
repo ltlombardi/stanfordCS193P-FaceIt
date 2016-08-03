@@ -9,7 +9,7 @@
 import UIKit
 
 class FaceViewController: UIViewController {
-    var expression = FacialExpression(eyes: .Open, eyeBrows: .Relaxed, mouth: .Smile){
+    var expression = FacialExpression(eyes: .Open, eyeBrows: .Relaxed, mouth: .Frown ){
         didSet {
             updateUI()
         }
@@ -17,7 +17,35 @@ class FaceViewController: UIViewController {
     @IBOutlet weak var faceView: FaceView!{
         didSet {
             faceView.addGestureRecognizer(UIPinchGestureRecognizer(target: faceView, action: #selector(FaceView.changeScale(_:))))
+            let happierGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(increaseHappiness))
+            happierGestureRecognizer.direction = .Up
+            faceView.addGestureRecognizer(happierGestureRecognizer)
+            let sadderGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(decreaseHappiness))
+            sadderGestureRecognizer.direction = .Down
+            faceView.addGestureRecognizer(sadderGestureRecognizer)
+            
             updateUI()
+        }
+    }
+    
+    @objc private func increaseHappiness(){
+        expression.mouth = expression.mouth.happierMouth()
+    }
+    
+    @objc private func decreaseHappiness(){
+        expression.mouth = expression.mouth.sadderMouth()
+    }
+    
+    @IBAction func toggleEyes(sender: UITapGestureRecognizer) {
+        if sender.state == .Ended{
+            switch expression.eyes {
+            case .Open:
+                expression.eyes = .Closed
+            case .Closed:
+                expression.eyes = .Open
+            case .Squinting:
+                expression.eyes = .Open
+            }
         }
     }
     
